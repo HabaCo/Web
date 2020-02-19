@@ -1,0 +1,21 @@
+.container {
+	width: 70%;
+	margin: 25px auto 0 auto;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-row-gap: 5px;
+	grid-column-gap: 2%;
+	grid-auto-columns: max-content;
+}
+.container > a, .container > span {
+	font-family: Microsoft JhengHei, Monospace;
+	background-color: MintCream;
+	border-radius: 15px;
+	color: seagreen;
+    font-size: 1vw;
+	font-weight: bold;
+	padding: 10%;
+}
+.container > a:visted, .container > a:link{
+	color: MediumSeaGreen;
+}

@@ -1,0 +1,89 @@
+body {
+	min-width: 1024px;
+}
+
+hr {
+    display: block;
+    border-top: 3px solid MintCream;
+	border-bottom: 3px solid MintCream;
+	border-radius: 6px;
+    margin: 30px 20px;
+}
+
+div.tester_layout {
+	display: block;
+	height: 150px;
+	border-radius: 15px;
+	background-color: MintCream;
+    margin: 20px 30px;
+	padding: 15px;
+	position: relative;
+}
+
+div.verticalLine {
+	position: relative;
+	width: 6px;
+	left: 80%;
+	height: 100%;
+	border-radius: 6px;
+	background-color: MediumSeaGreen;
+}
+
+.testerInfo {
+	color: MediumSeaGreen;
+	position: absolute;
+}
+
+.testerEdit {
+	color: Red;
+	cursor: pointer;
+	position: absolute;
+}
+
+.testerEdit:hover{
+    text-decoration: underline;
+}
+
+.testerInfo.image {
+	left: 1%;
+	top: 23%;
+	bottom: 5%;
+	width: 180px;
+	background-color: #ab5;
+}
+
+.testerInfo.id {
+	left: 1%;
+	top: 0%;
+}
+
+.testerInfo.subject {
+	left: 23%;
+	top: 0%;
+}
+
+.testerInfo.cost {
+	left: 45%;
+	top: 0%;
+}
+
+.testerInfo.correct {
+	left: 30%;
+	top: 32%;
+}
+
+.testerEdit.subject {
+	left: 23%;
+	bottom: 10%;
+}
+
+.testerEdit.level {
+	left: 40%;
+	bottom: 10%;
+}
+
+.testerEdit.reset {
+	left: 57%;
+	bottom: 10%;
+}
+

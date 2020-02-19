@@ -1,0 +1,37 @@
+body{
+	padding: 25px;
+	background-color: MediumSeaGreen;
+	text-align: center;
+}
+p, span, a{
+	font-size: 150%;
+	margin: 5px;
+	color: MintCream;
+	font-family: Monospace, Microsoft JhengHei;
+	font-weight: bold;
+	letter-spacing: 2px;
+	text-align: center;
+}
+p#title{
+	font-size: 5vw;
+}
+p#subtitle{
+	font-size: 3vw;
+}
+a.button{
+	text-decoration: none;
+	cursor: default;
+}
+.button{
+	text-align: center;
+	vertical-align: middle;
+	cursor: default;
+	opacity: 0.5;
+    transition: opacity .4s ease-out;
+    -moz-transition: opacity .4s ease-out;
+    -webkit-transition: opacity .4s ease-out;
+    -o-transition: opacity .4s ease-out;
+}
+.button:hover{
+	opacity: 1;
+}

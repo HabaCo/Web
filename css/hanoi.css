@@ -1,0 +1,55 @@
+p#title{
+	font-size:250%;
+}
+p#timer{
+	font-size:160%;
+}
+div#uploadButton {
+	width: 10%;
+	display: none;
+}
+div{
+    text-align:center;
+	margin: auto;
+	margin-top: 15px;
+	padding: 5px;
+	display: block;
+}
+div.panel {
+	width: 70%;
+    border-radius: 10px;
+}
+div.panel_pick {
+	width: 70%;
+    border-radius: 10px;
+	display: inline-block;
+}
+svg{
+    border-radius: 10px;
+}
+svg.hanoi_vector {
+	width: 28%;
+	height: 220px;
+	margin-left: 1%;
+	margin-right: 1%;
+	padding-bottom:2px;
+	display: inline-block;
+	background-color: #EEEEEE;
+}
+svg.hanoi_vector:hover{
+	cursor: pointer;
+}
+svg.hanoi_vector_temp {
+	width: 29%;
+	height: 110px;
+	margin: auto;
+	display: block;
+	position: relative;
+	background-color: MintCream ;
+}
+.hanoi_bar{
+	fill: ForestGreen;
+}
+.hanoi_item{
+	fill:url(#hanoi_grad);
+}
