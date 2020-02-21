@@ -1,0 +1,5 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target" : { "namespace": "android_app", "package_name": "com.habaco.maskviewer",
+                 "sha256_cert_fingerprints": ["EB:D3:46:F1:E6:00:95:02:9E:DB:AF:39:36:FA:FC:C4:58:C1:20:AE"] }
+  }]
