@@ -148,12 +148,6 @@
             }
         }
 
-        uploadFile.addEventListener('change', function () {
-            if (this.files.length > 0) {
-                uploadAudio(this.files[0]);
-            }
-        });
-
         function uploadAudio(audioBlob) {
 
             const formData = new FormData();
