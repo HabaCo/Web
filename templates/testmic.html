@@ -60,8 +60,6 @@
     <script>
 
         let isRecording = false;
-        let record = document.getElementById('record');
-        let uploadFile = document.getElementById('uploadFile');
         let analyser;
         let mediaRecorder;
         let audioChunks = [];
@@ -134,7 +132,6 @@
 
         function startRecording() {
             if (!isRecording) {
-                record.textContent = "開始錄音";
                 mediaRecorder.start();
                 isRecording = true;
             }
@@ -142,7 +139,6 @@
 
         function stopRecording() {
             if (isRecording) {
-                record.textContent = "停止錄音";
                 mediaRecorder.stop();
                 isRecording = false;
             }
