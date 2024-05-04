@@ -163,7 +163,7 @@
             const formData = new FormData();
             formData.append('file', audioBlob, 'recording.ogg');
 
-            fetch('/upload', {
+            fetch('http://haba.zapto.org:7979/upload', {
                 method: 'POST',
                 body: formData,
             })
