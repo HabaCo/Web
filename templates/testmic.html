@@ -56,10 +56,6 @@
 </head>
 
 <body>
-    <div id="uploadSection">
-        <input type="file" id="uploadFile" placeholder="直接上傳音訊">
-    </div>
-    <button id="record">whisper - 開始錄音</button>
     <div id="message">訊息會顯示在此處<span id="dots"></span></div>
     <script>
 
@@ -134,7 +130,7 @@
             }
         }
 
-        setInterval(detectSilence, 100); // 每100毫秒檢查一次
+        setInterval(detectSilence, 10); // 每100毫秒檢查一次
 
         function startRecording() {
             if (!isRecording) {
