@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser-arcade-physics.min.js"></script>
+</head>
+
+<body>
+    <script>
+        class Example extends Phaser.Scene {
+            constructor() {
+                super()
+                this.score = 0;
+                this.timingError = 0.1;
+                this.bgScrollSpeed = 0.3
+                this.targetMoveSpeed = 400
+                this.bg1 = null
+                this.bg2 = null
+                this.button = null
+            }
+
+            setFixedHeight(ele, dstHeight = this.scale.height) {
+                var scaleRatio = dstHeight / ele.height
+                ele.setScale(scaleRatio)
+            }
+
+            // Miss時放大搖晃
+            missEffect(target) {
+                this.tweens.add({
+                    targets: target,
+                    scale: 1.5,
+                    duration: 300,
+                    yoyo: true,  // 放大後回復原狀
+                    ease: 'Sine.easeInOut'
+                })
+                this.tweens.add({
+                    targets: target,
+                    angle: 360,  // 旋转360度
+                    duration: 1000,  // 完成旋转所需的时间，以毫秒为单位
+                    ease: 'Linear',  // 旋转的缓动类型
+                    repeat: -1,  // 重复旋转，-1表示无限重复
+                    yoyo: false  // 完成一次动画后是否反向运动
+                });
+            }
+
+            // 命中時圖片向上移動
+            hitEffect(target) {
+                this.tweens.killTweensOf(target);
+                this.tweens.add({
+                    targets: target,
+                    y: target.y - 100,
+                    alpha: 0,
+                    duration: 300,
+                    ease: 'Power2',
+                    onComplete: () => {
+                        target.destroy();  // 完成後銷毀物件
+                    }
+                });
+            }
+
+            displayTextFeedback(hit) {
+                let text = hit ? 'Perfect!' : 'Miss!';
+                let color = hit ? '#00ff00' : '#ff0000';
+                let feedbackText = this.add.text(this.centerX, this.centerY, text, { font: '40px Arial', fill: color }).setOrigin(0.5, 0.5);
+
+                this.tweens.add({
+                    targets: feedbackText,
+                    y: this.centerY - 100,
+                    alpha: 0,
+                    duration: 800,
+                    ease: 'Power2',
+                    onComplete: () => {
+                        feedbackText.destroy();
+                    }
+                });
+            }
+
+            generateElements() {
+                this.sprites = []
+                this.beats.forEach(beat => {
+                    // 计算每个元素移动到屏幕中心的时间
+                    let travelTime = (this.scale.width / 2) / this.targetMoveSpeed * 1000; // 转换为毫秒
+                    this.time.delayedCall(beat * 1000 - travelTime, () => { // 假设1秒到中心
+                        let sprite = this.add.sprite(this.scale.width, this.scale.height * 1 / 4, 'cat');
+                        this.sprites.push(sprite)
+
+                        this.tweens.add({
+                            targets: sprite,
+                            x: -sprite.width, // 从右到左完全穿过屏幕
+                            duration: (this.scale.width + sprite.width) / this.targetMoveSpeed * 1000, // 调整全程时间
+                            ease: 'Linear'
+                        });
+                    }, this);
+                });
+            }
+
+            checkRhythm() {
+                let currentTime = this.music.seek + 0.614;  // 獲取音樂當前播放時間（秒）
+                let hit = false;
+                console.log(currentTime)
+
+                // 檢查每個節奏點是否符合當前時間點
+                let index = -1
+                for (let i = 0; i < this.beats.length; i++) {
+                    let beatTime = this.beats[i];
+                    if (Math.abs(beatTime - currentTime) <= this.timingError * 2) {
+                        index = i
+                    }
+                    if (Math.abs(beatTime - currentTime) <= this.timingError) {
+                        hit = true;
+                        break;
+                    }
+                }
+
+                if (hit) {
+                    this.score += 1;
+                    console.log("Scored! Current score:", this.score);
+                    if (index != -1)
+                        this.hitEffect(this.sprites[index])
+                } else {
+                    console.log("Missed!");
+                    if (index != -1)
+                        this.missEffect(this.sprites[index])
+                }
+
+                this.displayTextFeedback(hit)
+            }
+
+            preload() {
+                this.load.audio('bgsound', 'assets/stage1.m4a');
+                this.load.json('beats', 'assets/beats.json');
+                this.load.image('bg', 'assets/bg.png')
+                this.load.image('btn-normal', 'assets/btn_normal.png')
+                this.load.image('btn-pressed', 'assets/btn_pressed.png')
+                this.load.image('cat', 'assets/cat_64.png');
+                this.load.image('cat_big', 'assets/cat_96.png');
+            }
+
+            create() {
+                this.music = this.sound.add('bgsound');
+                this.beats = this.cache.json.get('beats').beats;
+                this.centerX = this.cameras.main.width / 2;
+                this.centerY = this.cameras.main.height / 2;
+
+                this.bg1 = this.add.image(0, 0, 'bg').setOrigin(0, 0)
+                this.setFixedHeight(this.bg1)
+
+                this.bg2 = this.add.image(this.bg1.displayWidth, 0, 'bg').setOrigin(0, 0)
+                this.setFixedHeight(this.bg2)
+
+                this.button = this.add.image(this.scale.width / 2, this.scale.height * 3 / 4, 'btn-normal')
+                    .setOrigin(0.5, 0.5)
+                    .setInteractive()
+                    .on('pointerdown', () => {
+                        this.button.setTexture('btn-pressed');
+                    })
+                    .on('pointerup', () => {
+                        this.button.setTexture('btn-normal');
+                        this.checkRhythm()
+                    })
+                this.setFixedHeight(this.button, this.scale.width / 5)
+
+                let startButton = this.add.text(0, 0, 'Start', { font: '32px Arial', fill: '#0f0' })
+                    .setOrigin(0.5, 0.5)  // 将文本原点设置为中心，方便居中处理
+                    .setPosition(this.scale.width / 2, this.scale.height / 2)
+                    .setInteractive()
+                    .on('pointerup', () => this.start())
+                this.startButton = startButton
+
+                let padding = 10;  // 文本与背景边界的间距
+                let rectWidth = startButton.width + 2 * padding;  // 背景宽度
+                let rectHeight = startButton.height + 2 * padding;  // 背景高度
+
+                this.graphics = this.add.graphics()
+                    .fillStyle(0x000000, 0.5)
+                    .fillRoundedRect(startButton.x - rectWidth / 2, startButton.y - rectHeight / 2, rectWidth, rectHeight, 10)
+                    .lineStyle(2, 0xffffff, 1)
+                    .strokeRoundedRect(startButton.x - rectWidth / 2, startButton.y - rectHeight / 2, rectWidth, rectHeight, 10);
+
+                // 确保背景在文本下方
+                startButton.setDepth(1);
+
+                // event
+                this.input.keyboard.on('keydown-SPACE', () => {
+                    this.button.emit('pointerdown');
+                });
+                this.input.keyboard.on('keyup-SPACE', () => {
+                    this.button.emit('pointerup');
+                });
+
+                let catImage = this.add.image(this.scale.width / 2, this.scale.height / 4, 'cat'); // 添加图像到场景中
+
+                this.scale.on('resize', (gameSize, baseSize, displaySize, resolution) => {
+                    let width = gameSize.width;
+                    let height = gameSize.height;
+
+                    this.cameras.resize(width, height);
+
+                    this.button.setPosition(width / 2, height * 3 / 4);
+                });
+
+                this.scale.emit('resize', this.scale.gameSize, this.scale.baseSize, this.scale.displaySize, this.scale.resolution);
+            }
+
+            start() {
+                this.startButton.visible = false
+                this.graphics.visible = false
+
+                this.time.delayedCall(616, () => {
+                    this.music.play()
+                });
+                this.generateElements()
+            }
+
+            update() {
+                // bg flowed
+                this.bg1.x -= this.bgScrollSpeed;
+                this.bg2.x -= this.bgScrollSpeed;
+
+                if (this.bg1.x <= -this.bg1.displayWidth) {
+                    this.bg1.x = this.bg2.x + this.bg2.displayWidth;
+                }
+
+                if (this.bg2.x <= -this.bg2.displayWidth) {
+                    this.bg2.x = this.bg1.x + this.bg1.displayWidth;
+                }
+            }
+        }
+
+        const config = {
+            type: Phaser.AUTO,
+            scale: {
+                mode: Phaser.Scale.FIT,
+                parent: 'phaser-game',
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+                width: 9 * 100,  // 比例的宽度，这里用的是900
+                height: 16 * 100,  // 比例的高度，这里用的是1600
+            },
+            scene: Example,
+        };
+
+        const game = new Phaser.Game(config);
+    </script>
+
+</body>
+
+</html>
